@@ -8,7 +8,11 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
+<<<<<<< HEAD
 set VIRTUAL_ENV=C:\Users\Vanessa\OneDrive\Documentos\flask_app\env
+=======
+set VIRTUAL_ENV=C:\Users\Usuario\Desktop\Matriculas\env
+>>>>>>> Esteban
 
 if not defined PROMPT set PROMPT=$P$G
 

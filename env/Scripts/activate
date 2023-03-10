@@ -38,7 +38,11 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
+<<<<<<< HEAD
 VIRTUAL_ENV="C:\Users\Vanessa\OneDrive\Documentos\flask_app\env"
+=======
+VIRTUAL_ENV="C:\Users\Usuario\Desktop\Matriculas\env"
+>>>>>>> Esteban
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
