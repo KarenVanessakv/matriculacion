@@ -7,7 +7,7 @@ host = 'localhost'
 port = 5432
 dbname = 'bd_iec'
 user = 'postgres'
-password = '200494'
+password = '1357'
 
 
 def get_connection():

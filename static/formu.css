@@ -1,0 +1,12 @@
+*{
+    font-family: 'Poppins', sans-serif;
+}
+.cont_todo{
+    display: flex;
+    justify-content: space-between;
+}
+/* formulario datos personales */
+.cont12{
+    margin: 1.5%;
+    width: 15%;
+}
