@@ -16,7 +16,7 @@ def get_connection():
 
 @app.get('/')
 def home():
-    return send_file('static/vistaA.html')
+    return send_file('static/Max.html')
     
 if __name__ == '__main__':
     app.run(debug=True)
