@@ -9,7 +9,7 @@ host     = 'localhost'
 port     = 5432
 dbname   = 'bd_iec'
 user     = 'postgres'
-password = '1357'
+password = 'godofwar4'
 
 
 def get_connection():
@@ -179,7 +179,12 @@ def save_formularioIns():
     
 @app.get('/')
 def home():
-    return send_file('static/formu.html')
+    return send_file('static/Max.html')
+
+@app.route('/pagina2')
+def pagina2():
+    return send_file('static/seguimiento.html')
+    
     
 if __name__ == '__main__':
     app.run(debug=True) 

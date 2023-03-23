@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins';
+}
+.sistem{
+    color: rgb(255, 0, 0);
+}
+.iecaletras{
+    margin-left: 5%;
+}
+.imgempresa{
+    opacity: 0.5;
+    margin-top: 8%;
+}
+.encabezado{
+    height: 80px;
+}
+
+.filasxd{
+margin-left: 25%;
+}
+.BUSCAR{
+    width: 30%;
+   margin-left: 28%;
+
+}
+.botones{
+    gap: 20px;
+}
+.titulos{
+    text-align: center;
+    font-size: 26px;
+}
