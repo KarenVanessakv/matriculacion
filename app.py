@@ -9,7 +9,7 @@ host     = 'localhost'
 port     = 5432
 dbname   = 'bd_iec'
 user     = 'postgres'
-password = 'godofwar4'
+password = '1357' 
 
 
 def get_connection():
@@ -30,8 +30,52 @@ def get_formularioList():
     
 @app.post("/save/formulario")
 def save_formulario(): 
-    nuevo_estudiante = request.get_json()
-    cedula       = nuevo_estudiante['cedula_est'] 
+    nuevo_estudiante = request.get_json() 
+    cedula_est   = nuevo_estudiante['cedula_est']
+    nombres      = nuevo_estudiante['nombres']
+    apellidos    = nuevo_estudiante['apellidos']
+    correo       = nuevo_estudiante['correo'] 
+    celular      = nuevo_estudiante['celular']
+    telefono     = nuevo_estudiante['telefono']
+    ciudad       = nuevo_estudiante['ciudad']
+    sector       = nuevo_estudiante['sector']
+    barrio       = nuevo_estudiante['barrio']   
+    movilizacion = nuevo_estudiante['movilizacion'] 
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
+    cur.execute('insert into estudiante (cedula_est, nombres, apellidos, correo, celular, telefono, ciudad, sector, barrio, movilizacion) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) returning *', 
+                (cedula_est, nombres, apellidos, correo, celular, telefono, ciudad, sector, barrio, movilizacion))  
+    
+    estudiante_guardado = cur.fetchone()
+    print (estudiante_guardado)
+    conn.commit() 
+    cur.close()
+    conn.close()
+    return jsonify(estudiante_guardado)
+   
+   #eliminar estudiante
+    
+@app.delete('/drop/estudiante/<id>')
+def eliminar_estudiante(id):
+    conn = get_connection()
+    cur  = conn.cursor(cursor_factory=extras.RealDictCursor)
+    cur.execute('delete from estudiante where id_est = %s returning *', (id))
+    estudiante = cur.fetchone()
+    conn.commit()
+    conn.close()
+    cur.close()
+    if estudiante is None:
+        return jsonify({'message':'Estudiante no encontrado!'}), 404
+    return jsonify(estudiante)
+
+#actualizar estudiante
+
+@app.put('/update/estudiante/<id_est>')
+def actualizar_estudiante(id_est):
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
+    nuevo_estudiante = request.get_json() 
+    cedula_est   = nuevo_estudiante['cedula_est']
     nombres      = nuevo_estudiante['nombres']
     apellidos    = nuevo_estudiante['apellidos']
     correo       = nuevo_estudiante['correo']
@@ -41,18 +85,26 @@ def save_formulario():
     sector       = nuevo_estudiante['sector']
     barrio       = nuevo_estudiante['barrio']
     movilizacion = nuevo_estudiante['movilizacion'] 
-    conn = get_connection()
-    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-    cur.execute('insert into estudiante (cedula_est, nombres, apellidos, correo, celular, telefono, ciudad, sector, barrio, movilizacion) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) returning *', 
-                (cedula, nombres, apellidos, correo, celular, telefono, ciudad, sector, barrio, movilizacion))  
-    
-    estudiante_guardado = cur.fetchone()
-    print (estudiante_guardado)
-    conn.commit() 
+    cur.execute = ('update estudiante set cedula = %s, nombres = %s, apellidos = %s, correo = %s, celular = %s, telefono = %s, ciudad = %s, sector = %s, barrio = %s, movilizacion = %s returning *', 
+                   (cedula_est, nombres, apellidos, correo, celular, telefono, ciudad, sector, barrio, movilizacion))
+    estudiante_acutalizado = cur.fetchone()
+    conn.commit()
     cur.close()
     conn.close()
-    return jsonify(estudiante_guardado)
-    
+    if estudiante_acutalizado is None:
+        return jsonify({'message':'Estudiante no encontrado!'}), 404
+    return jsonify(estudiante_acutalizado)
+
+#nose
+@app.get('/getbyid/estudiante/<id>')
+def get_estudiante(id):
+    conn = get_connection
+    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
+    cur.execute('select *  from estudiante where id_est = %s', (id))
+    estudiante = cur.fetchone
+    if estudiante is None:
+        return jsonify({'message':'Estudiante no encontrado!'}), 404
+    return jsonify(estudiante)
     
 
 #formulario instituto   
@@ -186,6 +238,11 @@ def pagina2():
     return send_file('static/seguimiento.html')
     
     
+@app.route('/formulario1')
+def formulario():
+    return send_file('static/formu.html')
+
+
 if __name__ == '__main__':
     app.run(debug=True) 
         

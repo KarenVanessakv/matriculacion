@@ -2,7 +2,8 @@
 
 const guardarEstudiante = document.querySelector('#guardarEstudiante');
 let estudiante = [];
-let editar = false; 
+let editar = false;
+let estudianteid = null
 
 window.addEventListener("DOMContentLoaded", async () => {
     const response = await fetch("/getlist/formulario");
@@ -12,54 +13,126 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 guardarEstudiante.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const cedula       = guardarEstudiante["ced"].value;
-    const nombres      = guardarEstudiante["nomb"].value;
-    const apellidos    = guardarEstudiante["apell"].value;
-    const correo       = guardarEstudiante["correo"].value;
-    const celular      = guardarEstudiante["celu"].value;
-    const telefono     = guardarEstudiante["tele"].value;
-    const ciudad       = guardarEstudiante["ciu"].value;
-    const sector       = guardarEstudiante["sect"].value;
-    const barrio       = guardarEstudiante["barr"].value;
-    const movilizacion = guardarEstudiante["mov"].value; 
+    const cedula_est = guardarEstudiante["ced"].value;
+    const nombres = guardarEstudiante["nomb"].value;
+    const apellidos = guardarEstudiante["apell"].value;
+    const correo = guardarEstudiante["correo"].value;
+    const celular = guardarEstudiante["celu"].value;
+    const telefono = guardarEstudiante["tele"].value;
+    const ciudad = guardarEstudiante["ciu"].value;
+    const sector = guardarEstudiante["sect"].value;
+    const barrio = guardarEstudiante["barr"].value;
+    const movilizacion = guardarEstudiante["mov"].value;
 
-    try {
-        const response = await fetch("/save/formulario",{
+    if (!editar) {
+        const response = await fetch("/save/formulario", {
             method: "POST",
-            headers: {"Content-Type":"application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                cedula_est: cedula,
-                nombres: nombres,
-                apellidos: apellidos,
-                correo: correo,
-                celular: celular,
-                telefono: telefono,
-                ciudad: ciudad,
-                sector: sector,
-                barrio: barrio,
-                movilizacion: movilizacion
+                cedula_est,
+                nombres,
+                apellidos,
+                correo,
+                celular,
+                telefono,
+                ciudad,
+                sector, 
+                barrio,
+                movilizacion
             })
         });
 
-        if (!response.ok) {
-            throw new Error("Error al guardar los datos del estudiante");
-        } 
 
         const data = await response.json();
         estudiante.push(data);
 
-    } catch (error) {
-        console.error(error);
+
+    } else {
+        const response = await fetch(`/update/estudiante/${estudianteid}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                cedula_est,
+                nombres,
+                apellidos,
+                correo,
+                celular,
+                telefono,
+                ciudad,
+                sector, 
+                barrio,
+                movilizacion
+            })
+
+        })
+        const actualizarxd = await response.json();
+        estudiante = estudiante.map((estudiantes) => estudiantes.id === actualizarxd.id ? actualizarxd : estudiantes);
+        console.log(estudiante)
+        editar = false;
+        estudianteid = null;
     }
+    guardarEstudiante.reset();
 });
 
+function generarEstudiante(estudiante) {
+    const listEstudiante = document.querySelector("#tablaEstudiante");
+    listEstudiante.innerHTML = "";
+    estudiante.forEach((estudiante2) => {
+        const estudianteItem = document.createElement("table");
+        estudianteItem.innerHTML = `
+        <thead><tr><th>Estudiante</th></tr></thead>
+        <tbody>
+            <td>${estudiante2.cedula_est}</td>
+            <td>${estudiante2.nombres}</td>
+            <td>${estudiante2.apellidos}</td>
+            <td>${estudiante2.correo}</td>
+            <td>${estudiante2.celular}</td>
+            <td>${estudiante2.telefono}</td>
+            <td>${estudiante2.ciudad}</td>
+            <td>${estudiante2.sector}</td>
+            <td>${estudiante2.barrio}</td>
+            <td>${estudiante2.movilizacion}</td>
+            <td><button class="btn-edit btn btn-primary">Editar</button>  <button class="btn-delete btn btn-danger">Eliminar</button></td>
+        </tbody>`;
+        //boton eliminar
+        const btnEliminar = estudianteItem.querySelector('.btn-delete');
+        btnEliminar.addEventListener("click", async (e) => {
+            const response = await fetch(`/drop/estudiante/${estudiante2.id_est}`, {
+                method: 'DELETE',
+            });
+            const data = await response.json();
+            estudiante = estudiante.filter((estudiante2)=> estudiante2.id_est !== data.id);
+            generarEstudiante(estudiante);
+        });
+        listEstudiante.appendChild(estudianteItem);
 
+        //botoneditar 
+        const btnEdit = estudianteItem.querySelector('.btn-edit');
+        btnEdit.addEventListener('click', async (e) =>{
+            const response = await fetch(`/getbyid/estudiante/${estudiante2.id_est}`);
+            const data = await response.json(); 
+            guardarEstudiante['cedula_est'].value = data.cedula_est;
+            guardarEstudiante['nombres'].value = data.nombres;
+            guardarEstudiante['apellidos'].value = data.apellidos;
+            guardarEstudiante['correo'].value = data.correo;
+            guardarEstudiante['celular'].value = data.celular;
+            guardarEstudiante['telefono'].value = data.telefono;
+            guardarEstudiante['ciudad'].value = data.ciudad;
+            guardarEstudiante['sector'].value = data.sector;
+            guardarEstudiante['barrio'].value = data.barrio;
+            guardarEstudiante['movilizacion'].value = data.movilizacion;
+            
+        })
+
+    })
+
+}
 
 //datos instituto_estudiante
 
 const guardarInstituto = document.querySelector('#guardarInstituto');
 let instituto = [];
-let editar1 = false; 
+let editar1 = false;
 
 window.addEventListener("DOMContentLoaded", async () => {
     const response = await fetch("/getlist/institucion");
@@ -69,18 +142,18 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 guardarInstituto.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const nombre       = guardarInstituto["nomb_ins"].value;
-    const tipo         = guardarInstituto["tipo"].value;
-    const grado        = guardarInstituto["grsm"].value;
-    const seccion      = guardarInstituto["secc"].value;
-    const anio         = guardarInstituto["lect"].value;
-    const notauno        = guardarInstituto["nt1"].value;
-    const notados        = guardarInstituto["nt2"].value;
+    const nombre = guardarInstituto["nomb_ins"].value;
+    const tipo = guardarInstituto["tipo"].value;
+    const grado = guardarInstituto["grsm"].value;
+    const seccion = guardarInstituto["secc"].value;
+    const anio = guardarInstituto["lect"].value;
+    const notauno = guardarInstituto["nt1"].value;
+    const notados = guardarInstituto["nt2"].value;
 
     try {
-        const response = await fetch("/save/institucion",{
+        const response = await fetch("/save/institucion", {
             method: "POST",
-            headers: {"Content-Type":"application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 nombre,
                 tipo,
@@ -88,13 +161,13 @@ guardarInstituto.addEventListener("submit", async (e) => {
                 seccion,
                 anio,
                 notauno,
-                notados 
+                notados
             })
         });
 
         if (!response.ok) {
             throw new Error("Error al guardar los datos del instituto");
-        } 
+        }
 
         const data = await response.json();
         instituto.push(data);
@@ -109,7 +182,7 @@ guardarInstituto.addEventListener("submit", async (e) => {
 
 // const guardarRepresentante = document.querySelector('#guardarRepresentante');
 // let representante = [];
-// let editar3 = false; 
+// let editar3 = false;
 
 // window.addEventListener("DOMContentLoaded", async () => {
 //     const response = await fetch("/getlist/formulario");
@@ -142,7 +215,7 @@ guardarInstituto.addEventListener("submit", async (e) => {
 
 //         if (!response.ok) {
 //             throw new Error("Error al guardar los datos del representante");
-//         } 
+//         }
 
 //         const data = await response.json();
 //         representante.push(data);
@@ -160,7 +233,7 @@ guardarInstituto.addEventListener("submit", async (e) => {
 
 // const guardariecaaa = document.querySelector('#guardariecaaa');
 // let iecaaa = [];
-// let editar4 = false; 
+// let editar4 = false;
 
 // window.addEventListener("DOMContentLoaded", async () => {
 //     const response = await fetch("/getlist/formulario");
@@ -195,13 +268,12 @@ guardarInstituto.addEventListener("submit", async (e) => {
 
 //         if (!response.ok) {
 //             throw new Error("Error al guardar los datos de iecaaa");
-//         } 
+//         }
 
 //         const data = await response.json();
 //         iecaaa.push(data);
 
-//     } catch (error) { 
+//     } catch (error) {
 //         console.error(error);
 //     }
 // }); 
- 
