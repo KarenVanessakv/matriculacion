@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/css/register.css">
+    <title>Register</title>
+</head>
+<script>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-danger" role="alert">
+                {% for message in messages %}
+                    {{message}}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+</script>
+
+<body>
+    <div class="container"><br>
+        <center><img class="mb-4" src="../../static/img/logo-IECAAA.jpg" alt="" width="150" height="150" style="border-radius:10%"></center>
+        <form method="POST" action="/register" enctype="multipart/form-data">
+            <div class="card">
+                <div class="card-header">
+                   <center><h3>REGISTRO</h3></center>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Datos del Usuario</h5>
+                    <p class="card-text">
+                        <div class="form-group">
+                            <label for="nombres">Nombres: </label>
+                            <input id="nombres" class="form-control" type="text" name="nombres" placeholder="Ingrese sus nombres" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="apellidos">Apellidos: </label>
+                            <input id="apellidos" class="form-control" type="text" name="apellidos" placeholder="Ingrese sus apellidos" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="correo">Correo: </label>
+                            <input id="correo" class="form-control" type="email" name="correo" placeholder="Ingrese su correo" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Contraseña: </label>
+                            <input id="password" class="form-control" type="password" name="password" placeholder="Ingrese su contraseña" required>
+                        </div><br>
+                        <div>
+                            <center><input type="submit" value="Crear cuenta" class="btn btn-primary"></center>
+                            <center><br><p>¿Ya tienes una cuenta? <a href="{{url_for('login')}}">Inicia Sesión</a></p></center>
+                        </div>
+                    </p>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>
