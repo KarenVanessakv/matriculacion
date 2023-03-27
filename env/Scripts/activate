@@ -38,7 +38,11 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
+<<<<<<< HEAD
 VIRTUAL_ENV="C:\xampp\htdocs\Login_py\env"
+=======
+VIRTUAL_ENV="C:\Users\Vanessa\OneDrive\Documentos\flask_app\env"
+>>>>>>> d2355293b409560a818bf4aa09f1761b2fd2377e
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
